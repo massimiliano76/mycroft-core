@@ -4,14 +4,16 @@ pipeline {
     stages {
 
         // Run the build in the against the dev branch to check for compile errors
-        stage('Build dev branch') {
+        stage('Build Docker Image') {
             when {
-                branch 'testing/behave'
+                anyOf {
+                    branch 'testing/behave'
+                    changeRequest target: 'dev'
+                }
             }
             steps {
-                echo 'Running dev_setup.sh... '
-                sh 'mkdir /opt/mycroft'
-                // sh ' CI=true ./dev_setup.sh --allow-root -sm'
+                echo 'Building Docker Image'
+                sh 'echo ${BRANCH_NAME}'
             }
         }
     }
