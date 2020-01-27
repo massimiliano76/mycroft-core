@@ -13,7 +13,7 @@ pipeline {
             }
             steps {
                 echo 'Building Docker Image'
-                sh 'echo ${BRANCH_NAME}'
+                sh 'echo ' + env.BRANCH_NAME
             }
         }
     }
