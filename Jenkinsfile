@@ -1,24 +1,36 @@
 pipeline {
     agent any
+    options {
+        // Running builds concurrently could cause a race condition with
+        // building the Docker image.
+        disableConcurrentBuilds()
+    }
     triggers {
         cron('0 * * * *')
     }
     stages {
-
         // Run the build in the against the dev branch to check for compile errors
         stage('Build Docker Image') {
+            steps {
+                sh 'docker build --no-cache -t mycroft-core:latest .'
+            }
+        }
+        stage('Run Integration Tests') {
             when {
                 anyOf {
-                    branch 'testing/behave'
+                    allOf {
+                        branch 'testing/behave'
+                        triggeredBy 'TimerTrigger'
+                    }
                     changeRequest target: 'dev'
                 }
             }
             steps {
-                echo 'Building Docker image'
-                sh 'docker build --no-cache -t mycroft-core:latest .'
-                echo 'Running Docker image'
                 sh 'docker run mycroft-core:latest'
-                echo 'Cleaning up Docker containers and images'
+            }
+        }
+        stage('Clean Up Docker') {
+            steps {
                 sh 'docker container prune --force'
                 sh 'docker image prune --force'
             }
