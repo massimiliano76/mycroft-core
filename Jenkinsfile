@@ -16,6 +16,7 @@ pipeline {
             steps {
                 echo 'Building Docker Image'
                 sh 'docker build --no-cache -t mycroft-core:latest .'
+                sh 'docker run mycroft-core:latest'
             }
         }
     }
