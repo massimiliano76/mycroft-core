@@ -27,6 +27,13 @@ pipeline {
             }
             steps {
                 sh 'docker run mycroft-core:latest'
+                sh ' docker run \
+                    -v "$HOME/mycroft:/root/.mycroft" \
+                    --device /dev/snd \
+                    -e PULSE_SERVER=unix:${XDG_RUNTIME_DIR}/pulse/native \
+                    -v ${XDG_RUNTIME_DIR}/pulse/native:${XDG_RUNTIME_DIR}/pulse/native \
+                    -v ~/.config/pulse/cookie:/root/.config/pulse/cookie \
+                     mycroft-core:latest'
             }
         }
         stage('Clean Up Docker') {
