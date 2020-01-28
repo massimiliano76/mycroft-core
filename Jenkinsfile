@@ -1,6 +1,8 @@
 pipeline {
     agent any
-
+    triggers {
+        cron('0 * * * *')
+    }
     stages {
 
         // Run the build in the against the dev branch to check for compile errors
@@ -13,7 +15,7 @@ pipeline {
             }
             steps {
                 echo 'Building Docker Image'
-                sh 'echo ' + env.BRANCH_NAME
+                sh 'docker build --no-cache --target mycroft-core:latest .'
             }
         }
     }
