@@ -14,9 +14,11 @@ pipeline {
                 }
             }
             steps {
-                echo 'Building Docker Image'
+                echo 'Building Docker image'
                 sh 'docker build --no-cache -t mycroft-core:latest .'
+                echo 'Running Docker image'
                 sh 'docker run mycroft-core:latest'
+                echo 'Cleaning up Docker containers and images'
                 sh 'docker container prune --force'
                 sh 'docker image prune --force'
             }
