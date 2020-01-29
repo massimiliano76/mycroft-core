@@ -12,6 +12,7 @@ pipeline {
         // Run the build in the against the dev branch to check for compile errors
         stage('Build Docker Image') {
             steps {
+                sh 'cp test/integrationtests/voigt_kampff/Dockerfile ./'
                 sh 'docker build --no-cache -t mycroft-core:latest .'
             }
         }
@@ -26,14 +27,13 @@ pipeline {
                 }
             }
             steps {
-                sh 'docker run mycroft-core:latest'
                 sh ' docker run \
-                    -v "$HOME/mycroft:/root/.mycroft" \
+                    -v "$HOME/voigtmycroft:/root/.mycroft" \
                     --device /dev/snd \
                     -e PULSE_SERVER=unix:${XDG_RUNTIME_DIR}/pulse/native \
                     -v ${XDG_RUNTIME_DIR}/pulse/native:${XDG_RUNTIME_DIR}/pulse/native \
                     -v ~/.config/pulse/cookie:/root/.config/pulse/cookie \
-                     mycroft-core:latest'
+                    mycroft-core:latest'
             }
         }
         stage('Clean Up Docker') {
