@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:18.04 as builder
 ENV TERM linux
 ENV DEBIAN_FRONTEND noninteractive
 COPY . /opt/mycroft/mycroft-core
@@ -22,4 +22,14 @@ RUN mkdir ~/.mycroft \
         && /opt/mycroft/mycroft-core/.venv/bin/msm -p mycroft_mark_1 default
 EXPOSE 8181
 
-ENTRYPOINT "/opt/mycroft/mycroft-core/test/integrationtests/voigt_kampff/startup.sh"
+# Integration Test Suite
+FROM builder as voight_kampff
+# Activate the virtual environment for Mycroft Core.
+RUN source /opt/mycroft/mycroft-core/.venv/bin/activate
+# Start the Mycroft Core proceses
+RUN /opt/mycroft/mycroft-core/start-mycroft.sh all > /dev/null
+# Setup the integration tests
+RUN python -m test.integrationtests.voigt_kampff.test_setup -c ~/.mycroft/test.yml
+    && cd test/integrationtests/voigt_kampff/
+# Run the integration tests
+ENTRYPOINT "behave -f behave_html_formatter:HTMLFormatter > ~/.mycroft/behave.html"
