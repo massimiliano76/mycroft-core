@@ -48,7 +48,16 @@ pipeline {
         
     }
     post {
-        always('Clean Up Docker') {
+        always('Important stuff') {
+            sh 'mv "$HOME/voigtmycroft/behave.html" ./'
+            publishHTML (target: [
+              allowMissing: false,
+              alwaysLinkToLastBuild: false,
+              keepAll: true,
+              reportDir: '.',
+              reportFiles: 'behave.html',
+              reportName: "Behave Report"
+            ])
             echo 'Cleaning up docker containers and images'
             sh 'docker container prune --force'
             sh 'docker image prune --force'
