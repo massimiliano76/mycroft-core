@@ -29,7 +29,7 @@ RUN source /opt/mycroft/mycroft-core/.venv/bin/activate
 # Start the Mycroft Core proceses
 RUN /opt/mycroft/mycroft-core/start-mycroft.sh all > /dev/null
 # Setup the integration tests
-RUN python -m test.integrationtests.voigt_kampff.test_setup -c ~/.mycroft/test.yml
+RUN python -m test.integrationtests.voigt_kampff.test_setup -c ~/.mycroft/test.yml \
     && cd test/integrationtests/voigt_kampff/
 # Run the integration tests
 ENTRYPOINT "behave -f behave_html_formatter:HTMLFormatter > ~/.mycroft/behave.html"
