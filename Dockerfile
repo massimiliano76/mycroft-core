@@ -1,5 +1,4 @@
 FROM ubuntu:18.04
-
 ENV TERM linux
 ENV DEBIAN_FRONTEND noninteractive
 COPY . /opt/mycroft/mycroft-core
@@ -7,23 +6,19 @@ COPY . /opt/mycroft/mycroft-core
 RUN set -x \
 	&& sed -i 's/# \(.*multiverse$\)/\1/g' /etc/apt/sources.list \
 	&& apt-get update \
-	&& apt-get -y install git python3 python3-pip locales sudo \
-	# Checkout Mycroft
-	&& cd /opt/mycroft/mycroft-core \
+	# TODO: add locales to dev_setup.sh
+    && apt-get -y install locales sudo\
 	&& mkdir /opt/mycroft/skills \
 	&& CI=true bash -x /opt/mycroft/mycroft-core/dev_setup.sh --allow-root -sm \
 	&& apt-get -y autoremove \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
 # Set the locale
 RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
-
 WORKDIR /opt/mycroft/mycroft-core
-
 RUN mkdir ~/.mycroft \
         && /opt/mycroft/mycroft-core/.venv/bin/msm -p mycroft_mark_1 default
 EXPOSE 8181
