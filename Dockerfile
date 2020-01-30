@@ -27,11 +27,11 @@ EXPOSE 8181
 # Integration Test Suite
 FROM builder as voigt_kampff
 # Activate the virtual environment for Mycroft Core.
-RUN bash -x source /opt/mycroft/mycroft-core/.venv/bin/activate
-# Start the Mycroft Core proceses
-RUN bash -x /opt/mycroft/mycroft-core/start-mycroft.sh all > /dev/null
-# Setup the integration tests
-RUN python -m test.integrationtests.voigt_kampff.test_setup -c ~/.mycroft/test.yml \
+RUN . /opt/mycroft/mycroft-core/.venv/bin/activate \
+    # Start the Mycroft Core proceses
+    && bash -x /opt/mycroft/mycroft-core/start-mycroft.sh all > /dev/null \
+    # Setup the integration tests
+    && python -m test.integrationtests.voigt_kampff.test_setup -c ~/.mycroft/test.yml \
     && cd test/integrationtests/voigt_kampff/
 # Run the integration tests
-ENTRYPOINT "behave -f behave_html_formatter:HTMLFormatter > ~/.mycroft/behave.html"
+ENTRYPOINT ". /opt/mycroft/mycroft-core/.venv/bin/activate && behave -f behave_html_formatter:HTMLFormatter > ~/.mycroft/behave.html"
