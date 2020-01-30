@@ -2,7 +2,7 @@ FROM ubuntu:18.04
 
 ENV TERM linux
 ENV DEBIAN_FRONTEND noninteractive
-COPY test/integrationtests/voigt_kampff /opt/mycroft/mycroft-core
+COPY . /opt/mycroft/mycroft-core
 # Install Server Dependencies for Mycroft
 RUN set -x \
 	&& sed -i 's/# \(.*multiverse$\)/\1/g' /etc/apt/sources.list \
