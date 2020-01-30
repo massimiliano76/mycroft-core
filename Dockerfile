@@ -7,7 +7,7 @@ RUN set -x \
 	&& sed -i 's/# \(.*multiverse$\)/\1/g' /etc/apt/sources.list \
 	&& apt-get update \
 	# TODO: add locales to dev_setup.sh
-    && apt-get -y install locales \
+    && apt-get -y install locales sudo\
 	&& mkdir /opt/mycroft/skills \
 	&& CI=true bash -x /opt/mycroft/mycroft-core/dev_setup.sh --allow-root -sm \
 	&& apt-get -y autoremove \
