@@ -11,36 +11,56 @@ pipeline {
     stages {
         // Run the build in the against the dev branch to check for compile errors
         stage('Build Docker Image') {
+            when {
+                anyOf {
+                    branch 'testing/behave'
+                    branch 'dev'
+                    branch 'master'
+                    triggeredBy 'TimerTrigger'
+                    changeRequest target: 'dev'
+                }
+            }
             steps {
+                sh 'cp test/integrationtests/voigt_kampff/Dockerfile ./'
                 sh 'docker build --no-cache -t mycroft-core:latest .'
             }
         }
         stage('Run Integration Tests') {
             when {
                 anyOf {
-                    allOf {
-                        branch 'testing/behave'
-                        triggeredBy 'TimerTrigger'
-                    }
+                    branch 'testing/behave'
+                    branch 'dev'
+                    branch 'master'
+                    triggeredBy 'TimerTrigger'
                     changeRequest target: 'dev'
                 }
             }
             steps {
-                sh 'docker run mycroft-core:latest'
-                sh ' docker run \
-                    -v "$HOME/mycroft:/root/.mycroft" \
+                sh 'docker run \
+                    -v "$HOME/voigtmycroft:/root/.mycroft" \
                     --device /dev/snd \
                     -e PULSE_SERVER=unix:${XDG_RUNTIME_DIR}/pulse/native \
                     -v ${XDG_RUNTIME_DIR}/pulse/native:${XDG_RUNTIME_DIR}/pulse/native \
                     -v ~/.config/pulse/cookie:/root/.config/pulse/cookie \
-                     mycroft-core:latest'
+                    mycroft-core:latest'
             }
         }
-        stage('Clean Up Docker') {
-            steps {
-                sh 'docker container prune --force'
-                sh 'docker image prune --force'
-            }
+        
+    }
+    post {
+        always('Important stuff') {
+            sh 'mv "$HOME/voigtmycroft/behave.html" ./'
+            publishHTML (target: [
+              allowMissing: false,
+              alwaysLinkToLastBuild: false,
+              keepAll: true,
+              reportDir: '.',
+              reportFiles: 'behave.html',
+              reportName: "Behave Report"
+            ])
+            echo 'Cleaning up docker containers and images'
+            sh 'docker container prune --force'
+            sh 'docker image prune --force'
         }
     }
 }
