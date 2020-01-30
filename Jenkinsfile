@@ -21,7 +21,6 @@ pipeline {
                 }
             }
             steps {
-                sh 'cp test/integrationtests/voigt_kampff/Dockerfile ./'
                 sh 'docker build --no-cache -t mycroft-core:latest .'
             }
         }
