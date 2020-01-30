@@ -10,20 +10,6 @@ pipeline {
     }
     stages {
         // Run the build in the against the dev branch to check for compile errors
-        stage('Build Docker Image') {
-            when {
-                anyOf {
-                    branch 'testing/behave'
-                    branch 'dev'
-                    branch 'master'
-                    triggeredBy 'TimerTrigger'
-                    changeRequest target: 'dev'
-                }
-            }
-            steps {
-                sh 'docker build --no-cache -t mycroft-core:latest .'
-            }
-        }
         stage('Run Integration Tests') {
             when {
                 anyOf {
@@ -35,7 +21,8 @@ pipeline {
                 }
             }
             steps {
-                sh ' docker run \
+                sh 'docker build --no-cache --target voigt_kampff -t mycroft-core:latest .'
+                sh 'docker run \
                     -v "$HOME/voigtmycroft:/root/.mycroft" \
                     --device /dev/snd \
                     -e PULSE_SERVER=unix:${XDG_RUNTIME_DIR}/pulse/native \
