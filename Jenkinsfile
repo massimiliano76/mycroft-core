@@ -19,10 +19,10 @@ pipeline {
         stage('Run Integration Tests') {
             when {
                 anyOf {
-                    allOf {
-                        branch 'testing/behave'
-                        triggeredBy 'TimerTrigger'
-                    }
+                    branch 'testing/behave'
+                    branch 'dev'
+                    branch 'master'
+                    triggeredBy 'TimerTrigger'
                     changeRequest target: 'dev'
                 }
             }
