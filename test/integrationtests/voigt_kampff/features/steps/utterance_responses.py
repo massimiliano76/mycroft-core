@@ -18,19 +18,19 @@ def load_dialog_list(skill_path, dialog):
         dialog (list): Dialog names (str) to load
 
     Returns:
-        list: Expanded dialog strings
+        tuple (list of Expanded dialog strings, debug string)
     """
     dialog_path = join(skill_path, 'dialog', 'en-us', dialog)
-    print('Opening {}'.format(dialog_path))
+    debug = 'Opening {}\n'.format(dialog_path)
     with open(dialog_path) as f:
         lines = f.readlines()
-    return [l.strip().lower() for l in lines]
+    return [l.strip().lower() for l in lines], debug
 
 
 def expected_dialog_check(utterance, skill_path, dialog):
     # Check that expected dialog file is used
     # Extract dialog texts from skill
-    dialogs = load_dialog_list(skill_path, dialog)
+    dialogs, debug = load_dialog_list(skill_path, dialog)
     # Allow custom fields to be anything
     d = [re.sub(r'{.*?\}', r'.*', t) for t in dialogs]
     # Remove left over '}'
@@ -39,14 +39,15 @@ def expected_dialog_check(utterance, skill_path, dialog):
     d = [re.sub(r'\.\*( \.\*)+', r'.*', t) for t in d]
     # Remove double whitespaces
     d = [' '.join(t.split()) for t in d]
-    print('MATCHING: {}'.format(utterance))
+    debug += 'MATCHING: {}\n'.format(utterance)
     for r in d:
-        print('---------------')
-        print(r, re.match(r, utterance))
-        if re.match(r, utterance):
-            return True
+        match = re.match(r, utterance)
+        debug += '---------------\n'
+        debug += '{} {}\n'.format(r, match is not None)
+        if match:
+            return True, debug
     else:
-        return False
+        return False, debug
 
 
 @given('an english speaking user')
@@ -71,8 +72,9 @@ def then_impl(context, skill, dialog):
     passed = False
     while not (passed or count > TIMEOUT):
         for message in context.speak_messages:
-            if expected_dialog_check(message.data['utterance'].lower(),
-                                     skill_path, dialog):
+            utt = message.data['utterance'].lower()
+            status, debug = expected_dialog_check(utt, skill_path, dialog)
+            if status:
                 passed = True
                 context.matched_message = message
                 break
@@ -80,5 +82,6 @@ def then_impl(context, skill, dialog):
             passed = False
         time.sleep(1)
         count += 1
-
+    if not passed:
+        print(debug)
     assert passed

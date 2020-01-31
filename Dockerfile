@@ -19,7 +19,6 @@ RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
-WORKDIR /opt/mycroft/mycroft-core
 RUN mkdir ~/.mycroft \
         && /opt/mycroft/mycroft-core/.venv/bin/msm -p mycroft_mark_1 default
 EXPOSE 8181
@@ -27,11 +26,12 @@ EXPOSE 8181
 # Integration Test Suite
 FROM builder as voigt_kampff
 # Activate the virtual environment for Mycroft Core.
+WORKDIR /opt/mycroft/mycroft-core/test/integrationtests/voigt_kampff
 RUN . /opt/mycroft/mycroft-core/.venv/bin/activate \
     # Start the Mycroft Core proceses
     && bash -x /opt/mycroft/mycroft-core/start-mycroft.sh all \
     # Setup the integration tests
-    && python -m test.integrationtests.voigt_kampff.test_setup -c ~/.mycroft/test.yml \
-    && cd test/integrationtests/voigt_kampff/
-# Run the integration tests
-ENTRYPOINT ". /opt/mycroft/mycroft-core/.venv/bin/activate && behave -f behave_html_formatter:HTMLFormatter > ~/.mycroft/behave.html"
+    && python -m test.integrationtests.voigt_kampff.test_setup -c default.yml
+# Run the integration tests/opt
+ENTRYPOINT "./startup.sh"
+#ENTRYPOINT "/bin/bash -c '. /opt/mycroft/mycroft-core/.venv/bin/activate && behave -f behave_html_formatter:HTMLFormatter -o ~/.mycroft/behave.html'"
