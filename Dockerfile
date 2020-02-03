@@ -35,4 +35,4 @@ RUN bash -x /opt/mycroft/mycroft-core/start-mycroft.sh all \
     && python -m test.integrationtests.voigt_kampff.test_setup -c default.yml
 # Run the integration tests/opt
 #ENTRYPOINT "./startup.sh"
-ENTRYPOINT "behave -f behave_html_formatter:HTMLFormatter -o ~/.mycroft/behave.html'"
+ENTRYPOINT ["behave", "-f behave_html_formatter:HTMLFormatter", "-o ~/.mycroft/behave.html'"]
