@@ -20,7 +20,7 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 RUN mkdir ~/.mycroft \
-        && /opt/mycroft/mycroft-core/.venv/bin/msm -p mycroft_mark_1 default
+    && /opt/mycroft/mycroft-core/.venv/bin/msm -p mycroft_mark_1 default
 EXPOSE 8181
 
 # Integration Test Suite
