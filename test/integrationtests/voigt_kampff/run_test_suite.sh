@@ -1,4 +1,6 @@
 #!/bin/bash
+
+# Script to start mycroft core services and run the integration tests.
 source /opt/mycroft/mycroft-core/.venv/bin/activate
 /opt/mycroft/mycroft-core/start-mycroft.sh all > /dev/null
 behave -f behave_html_formatter:HTMLFormatter > ~/.mycroft/behave.html
