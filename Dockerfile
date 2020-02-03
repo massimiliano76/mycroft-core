@@ -26,5 +26,10 @@ EXPOSE 8181
 # Integration Test Suite
 FROM builder as voigt_kampff
 WORKDIR /opt/mycroft/mycroft-core/test/integrationtests/voigt_kampff
+# Activate the virtual environment for Mycroft Core, start the Mycroft Core
+# proceses and setup the skills that will run druing the test.
+RUN . /opt/mycroft/mycroft-core/.venv/bin/activate \
+    && bash -x /opt/mycroft/mycroft-core/start-mycroft.sh all \
+    && python -m test.integrationtests.voigt_kampff.test_setup -c default.yml
 # Run the integration tests
 ENTRYPOINT "./run_test_suite.sh"
