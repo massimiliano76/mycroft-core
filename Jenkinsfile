@@ -5,9 +5,6 @@ pipeline {
         // building the Docker image.
         disableConcurrentBuilds()
     }
-    triggers {
-        cron('0 * * * *')
-    }
     stages {
         // Run the build in the against the dev branch to check for compile errors
         stage('Run Integration Tests') {
@@ -16,7 +13,6 @@ pipeline {
                     branch 'testing/behave'
                     branch 'dev'
                     branch 'master'
-                    triggeredBy 'TimerTrigger'
                     changeRequest target: 'dev'
                 }
             }
