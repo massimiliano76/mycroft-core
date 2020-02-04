@@ -12,6 +12,15 @@ from msm import MycroftSkillsManager
 
 from .generate_feature import generate_feature
 
+"""Test environment setup for voigt kampff test
+
+The script sets up the selected tests in the feature directory so they can
+be found and executed by the behave framework.
+
+The script also ensures that the tested skills are installed and that any
+specified extra skills also gets installed into the environment.
+"""
+
 FEATURE_DIR = join(dirname(__file__), 'features') + '/'
 
 
@@ -57,7 +66,7 @@ def main(cmdline_args):
 
 
 def run_setup(msm, test_skills, extra_skills, num_random_skills):
-
+    """Install needed skills and collect feature files for the test."""
     skills = [msm.find_skill(s) for s in test_skills + extra_skills]
     # Install test skills
     for s in skills:

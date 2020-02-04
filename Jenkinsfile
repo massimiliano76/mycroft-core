@@ -5,9 +5,6 @@ pipeline {
         // building the Docker image.
         disableConcurrentBuilds()
     }
-    triggers {
-        cron('0 * * * *')
-    }
     stages {
         // Run the build in the against the dev branch to check for compile errors
         stage('Run Integration Tests') {
@@ -16,19 +13,21 @@ pipeline {
                     branch 'testing/behave'
                     branch 'dev'
                     branch 'master'
-                    triggeredBy 'TimerTrigger'
                     changeRequest target: 'dev'
                 }
             }
             steps {
                 sh 'docker build --no-cache --target voigt_kampff -t mycroft-core:latest .'
-                sh 'docker run \
-                    -v "$HOME/voigtmycroft:/root/.mycroft" \
-                    --device /dev/snd \
-                    -e PULSE_SERVER=unix:${XDG_RUNTIME_DIR}/pulse/native \
-                    -v ${XDG_RUNTIME_DIR}/pulse/native:${XDG_RUNTIME_DIR}/pulse/native \
-                    -v ~/.config/pulse/cookie:/root/.config/pulse/cookie \
-                    mycroft-core:latest'
+                timeout(time: 60, unit: 'MINUTES')
+                {
+                    sh 'docker run \
+                        -v "$HOME/voigtmycroft:/root/.mycroft" \
+                        --device /dev/snd \
+                        -e PULSE_SERVER=unix:${XDG_RUNTIME_DIR}/pulse/native \
+                        -v ${XDG_RUNTIME_DIR}/pulse/native:${XDG_RUNTIME_DIR}/pulse/native \
+                        -v ~/.config/pulse/cookie:/root/.config/pulse/cookie \
+                        mycroft-core:latest'
+                }
             }
         }
         
