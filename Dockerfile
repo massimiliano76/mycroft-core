@@ -34,6 +34,5 @@ RUN msm -p mycroft_mark_1 default
 # repository.  Copy those files into the local feature file directory
 # for test discovery.
 RUN python -m test.integrationtests.voigt_kampff.skill_setup -c default.yml
-RUN mkdir ~/.mycroft/allure-result
 # Setup and run the integration tests
 ENTRYPOINT "./run_test_suite.sh"

@@ -14,6 +14,7 @@ RESULT=$?
 # Stop all mycroft core services.
 /opt/mycroft/mycroft-core/stop-mycroft.sh all
 ls -la
+mkdir ~/.mycroft/allure-result
 cp allure-result/* ~/.mycroft/allure-result
 # Remove temporary skill files
 rm -rf ~/.mycroft/skills
