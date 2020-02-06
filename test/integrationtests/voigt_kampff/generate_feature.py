@@ -32,7 +32,7 @@ def generate_feature(skill, skill_path):
     if case:
         output += 'Feature: {}\n'.format(skill)
     for c in case:
-        output += TEMPLATE.format(name=skill, utterance=c[1], dialog_file=c[2])
+        output += TEMPLATE.format(name=c[0], utterance=c[1], dialog_file=c[2])
 
     return output
 
