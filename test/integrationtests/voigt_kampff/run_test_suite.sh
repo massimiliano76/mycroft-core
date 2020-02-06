@@ -9,13 +9,13 @@
 /opt/mycroft/mycroft-core/start-mycroft.sh all
 # Run the integration test suite.  Results will be formatted for input into
 # the Allure reporting tool.
-behave -f allure_behave.formatter:AllureFormatter -o allure-result
+behave -f allure_behave.formatter:AllureFormatter -o ~/.mycroft/allure-result
 RESULT=$?
 # Stop all mycroft core services.
 /opt/mycroft/mycroft-core/stop-mycroft.sh all
-ls -la
-mkdir ~/.mycroft/allure-result
-cp allure-result/* ~/.mycroft/allure-result
+#ls -la
+#mkdir ~/.mycroft/allure-result
+#cp allure-result/* ~/.mycroft/allure-result
 # Remove temporary skill files
 rm -rf ~/.mycroft/skills
 # Remove intent cache
