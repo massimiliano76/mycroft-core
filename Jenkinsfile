@@ -44,7 +44,8 @@ pipeline {
 //                 ])
 //             }
             sh 'allure generate --output $HOME/voigtmycroft/allure-report --clean $HOME/voigtmycroft/allure-result'
-            sh 'mv "$HOME/voigtmycroft/allure_report/*" ./allure_report'
+            sh 'mkdir allure_report'
+            sh 'mv "$HOME/voigtmycroft/allure_report/*" allure_report'
             publishHTML (target: [
               allowMissing: false,
               alwaysLinkToLastBuild: false,
