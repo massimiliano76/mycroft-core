@@ -48,8 +48,8 @@ pipeline {
               allowMissing: false,
               alwaysLinkToLastBuild: false,
               keepAll: true,
-              reportDir: '.',
-              reportFiles: 'allure-report/index.html',
+              reportDir: 'allure-report',
+              reportFiles: 'index.html',
               reportName: "Behave Report"
             ])
             sh(
