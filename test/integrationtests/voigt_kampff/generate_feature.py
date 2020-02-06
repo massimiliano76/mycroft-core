@@ -5,10 +5,10 @@ import sys
 
 
 TEMPLATE = """
-  Scenario: {name}
+  Scenario: {scenario_name}
     Given an english speaking user
      When the user says "{utterance}"
-     Then "{name}" should reply with dialog from "{dialog_file}.dialog"
+     Then "{skill_name}" should reply with dialog from "{dialog_file}.dialog"
 """
 
 
@@ -32,7 +32,12 @@ def generate_feature(skill, skill_path):
     if case:
         output += 'Feature: {}\n'.format(skill)
     for c in case:
-        output += TEMPLATE.format(name=c[0], utterance=c[1], dialog_file=c[2])
+        output += TEMPLATE.format(
+            scenario_name=c[0],
+            skill_name=skill,
+            utterance=c[1],
+            dialog_file=c[2]
+        )
 
     return output
 
