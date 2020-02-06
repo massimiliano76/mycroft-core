@@ -21,6 +21,7 @@ ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 # Add the local configuration directory
 RUN mkdir ~/.mycroft
+VOLUME /root/.mycroft
 EXPOSE 8181
 
 # Integration Test Suite
