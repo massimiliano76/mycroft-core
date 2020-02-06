@@ -34,15 +34,16 @@ pipeline {
     }
     post {
         always('Important stuff') {
-            script {
-                allure([
-                    includeProperties: false,
-                    jdk: '',
-                    properties: [],
-                    reportBuildPolicy: 'ALWAYS',
-                    results: [[path: '$HOME/voigtmycroft/allure-result']]
-                ])
-            }
+//             script {
+//                 allure([
+//                     includeProperties: false,
+//                     jdk: '',
+//                     properties: [],
+//                     reportBuildPolicy: 'ALWAYS',
+//                     results: [[path: '$HOME/voigtmycroft/allure-result']]
+//                 ])
+//             }
+            sh 'allure generate --output $HOME/voigtmycroft/allure-report $HOME/voigtmycroft/allure-result'
             sh 'mv "$HOME/voigtmycroft/behave.html" ./'
             publishHTML (target: [
               allowMissing: false,
