@@ -28,21 +28,21 @@ pipeline {
                         -v ~/.config/pulse/cookie:/root/.config/pulse/cookie \
                         mycroft-core:latest'
                 }
-                script {
-                    allure([
-                        includeProperties: false,
-                        jdk: '',
-                        properties: [],
-                        reportBuildPolicy: 'ALWAYS',
-                        results: [[path: '$HOME/voigtmycroft/allure-result']]
-                    ])
-                }
             }
         }
         
     }
     post {
         always('Important stuff') {
+            script {
+                allure([
+                    includeProperties: false,
+                    jdk: '',
+                    properties: [],
+                    reportBuildPolicy: 'ALWAYS',
+                    results: [[path: '$HOME/voigtmycroft/allure-result']]
+                ])
+            }
             sh 'mv "$HOME/voigtmycroft/behave.html" ./'
             publishHTML (target: [
               allowMissing: false,
