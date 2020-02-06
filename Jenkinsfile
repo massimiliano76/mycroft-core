@@ -44,14 +44,14 @@ pipeline {
 //                 ])
 //             }
             sh 'allure generate --output $HOME/voigtmycroft/allure-report --clean $HOME/voigtmycroft/allure-result'
-            sh 'mkdir allure_report'
-            sh 'mv "$HOME/voigtmycroft/allure_report/*" allure_report'
+            sh 'mkdir allure-report'
+            sh 'mv "$HOME/voigtmycroft/allure-report/*" allure-report'
             publishHTML (target: [
               allowMissing: false,
               alwaysLinkToLastBuild: false,
               keepAll: true,
               reportDir: '.',
-              reportFiles: 'allure_report/index.html',
+              reportFiles: 'allure-report/index.html',
               reportName: "Behave Report"
             ])
             sh(
