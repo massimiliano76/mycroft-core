@@ -44,13 +44,13 @@ pipeline {
 //                 ])
 //             }
             sh 'allure generate --output $HOME/voigtmycroft/allure-report $HOME/voigtmycroft/allure-result'
-            sh 'mv "$HOME/voigtmycroft/behave.html" ./'
+//             sh 'mv "$HOME/voigtmycroft/behave.html" ./'
             publishHTML (target: [
               allowMissing: false,
               alwaysLinkToLastBuild: false,
               keepAll: true,
               reportDir: '.',
-              reportFiles: 'behave.html',
+              reportFiles: '$HOME/voigtmycroft/allure-report/index.html',
               reportName: "Behave Report"
             ])
             echo 'Cleaning up docker containers and images'
