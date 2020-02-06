@@ -54,9 +54,13 @@ pipeline {
               reportFiles: 'allure_report/index.html',
               reportName: "Behave Report"
             ])
-            echo 'Cleaning up docker containers and images'
-            sh 'docker container prune --force'
-            sh 'docker image prune --force'
+            sh(
+                label: 'Docker container and image cleanup',
+                script: '''
+                    docker container prune --force
+                    docker image prune --force
+                '''.stripIndent()
+            )
         }
     }
 }
