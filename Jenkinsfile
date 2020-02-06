@@ -43,9 +43,7 @@ pipeline {
 //                     results: [[path: '$HOME/voigtmycroft/allure-result']]
 //                 ])
 //             }
-            sh 'allure generate --output $HOME/voigtmycroft/allure-report --clean $HOME/voigtmycroft/allure-result'
-            sh 'mkdir allure-report'
-            sh 'cp "$HOME/voigtmycroft/allure-report/*" allure-report/'
+            sh 'allure generate --output allure-report --clean $HOME/voigtmycroft/allure-result'
             publishHTML (target: [
               allowMissing: false,
               alwaysLinkToLastBuild: false,
