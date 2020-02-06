@@ -28,6 +28,15 @@ pipeline {
                         -v ~/.config/pulse/cookie:/root/.config/pulse/cookie \
                         mycroft-core:latest'
                 }
+                script {
+                    allure([
+                        includeProperties: false,
+                        jdk: '',
+                        properties: [],
+                        reportBuildPolicy: 'ALWAYS',
+                        results: [[path: '$HOME/voigtmycroft/allure-result']]
+                    ])
+                }
             }
         }
         
