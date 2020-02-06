@@ -43,7 +43,7 @@ pipeline {
 //                     results: [[path: '$HOME/voigtmycroft/allure-result']]
 //                 ])
 //             }
-            sh 'allure generate --output $HOME/voigtmycroft/allure-report $HOME/voigtmycroft/allure-result'
+            sh 'allure generate --output $HOME/voigtmycroft/allure-report --clean $HOME/voigtmycroft/allure-result'
 //             sh 'mv "$HOME/voigtmycroft/behave.html" ./'
             publishHTML (target: [
               allowMissing: false,
