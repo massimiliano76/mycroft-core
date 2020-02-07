@@ -44,7 +44,8 @@ pipeline {
                     results: [[path: 'allure-result']]
                 ])
             }
-            sh 'scp allure-port.zip root@157.245.127.234:~' + BRANCH_NAME
+            sh 'tar -czf $BRANCH_NAME.tar.gz allure-report'
+            sh 'scp $BRANCH_NAME.tar.gz root@157.245.127.234:~
             sh(
                 label: 'Docker container and image cleanup',
                 script: '''
