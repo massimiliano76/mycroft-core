@@ -17,7 +17,7 @@ pipeline {
                 }
             }
             steps {
-                sh 'docker build --no-cache --target voigt_kampff -t mycroft-core:latest .'
+//                 sh 'docker build --no-cache --target voigt_kampff -t mycroft-core:latest .'
                 timeout(time: 60, unit: 'MINUTES')
                 {
                     sh 'docker run \
@@ -44,7 +44,8 @@ pipeline {
                     results: [[path: 'allure-result']]
                 ])
             }
-            sh 'tar -czf $BRANCH_NAME.tar.gz allure-report'
+            this_branch = sh 'echo $BRANCH_NAME | sed -r /s/*\/+/_/g'
+            sh 'tar -czf ${this_branch}.tar.gz allure-report'
             sh 'scp $BRANCH_NAME.tar.gz root@157.245.127.234:~'
             sh(
                 label: 'Docker container and image cleanup',
