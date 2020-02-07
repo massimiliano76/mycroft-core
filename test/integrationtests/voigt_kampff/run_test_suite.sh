@@ -13,6 +13,7 @@ behave -f allure_behave.formatter:AllureFormatter -o ~/.mycroft/allure-result
 RESULT=$?
 # Stop all mycroft core services.
 /opt/mycroft/mycroft-core/stop-mycroft.sh all
+ls -la ~/.mycroft
 # Remove temporary skill files
 rm -rf ~/.mycroft/skills
 # Remove intent cache
