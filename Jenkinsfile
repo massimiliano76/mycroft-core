@@ -34,24 +34,24 @@ pipeline {
     }
     post {
         always('Important stuff') {
-//             script {
-//                 allure([
-//                     includeProperties: false,
-//                     jdk: '',
-//                     properties: [],
-//                     reportBuildPolicy: 'ALWAYS',
-//                     results: [[path: '$HOME/voigtmycroft/allure-result']]
-//                 ])
-//             }
-            sh 'allure generate --output allure-report --clean $HOME/voigtmycroft/allure-result'
-            publishHTML (target: [
-              allowMissing: false,
-              alwaysLinkToLastBuild: false,
-              keepAll: true,
-              reportDir: 'allure-report',
-              reportFiles: 'index.html',
-              reportName: "Behave Report"
-            ])
+            script {
+                allure([
+                    includeProperties: false,
+                    jdk: '',
+                    properties: [],
+                    reportBuildPolicy: 'ALWAYS',
+                    results: [[path: '$HOME/voigtmycroft/allure-result']]
+                ])
+            }
+//             sh 'allure generate --output allure-report --clean $HOME/voigtmycroft/allure-result'
+//             publishHTML (target: [
+//               allowMissing: false,
+//               alwaysLinkToLastBuild: false,
+//               keepAll: true,
+//               reportDir: 'allure-report',
+//               reportFiles: 'index.html',
+//               reportName: "Behave Report"
+//             ])
             sh(
                 label: 'Docker container and image cleanup',
                 script: '''
