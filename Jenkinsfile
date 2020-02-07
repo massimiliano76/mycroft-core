@@ -17,7 +17,7 @@ pipeline {
                 }
             }
             steps {
-                sh 'docker build --no-cache --target voigt_kampff -t mycroft-core:latest .'
+//                 sh 'docker build --no-cache --target voigt_kampff -t mycroft-core:latest .'
                 timeout(time: 60, unit: 'MINUTES')
                 {
                     sh 'docker run \
@@ -35,14 +35,14 @@ pipeline {
     post {
         always('Important stuff') {
             sh 'pwd'
-            sh 'mv -R $HOME/voigtmycroft/allure-result allure-result'
+            sh 'mv $HOME/voigtmycroft/allure-result allure-result'
             script {
                 allure([
                     includeProperties: false,
                     jdk: '',
                     properties: [],
                     reportBuildPolicy: 'ALWAYS',
-                    results: [[path: '$HOME/voigtmycroft/allure-result']]
+                    results: [[path: 'allure-result']]
                 ])
             }
 //             sh 'allure generate --output allure-report --clean $HOME/voigtmycroft/allure-result'
