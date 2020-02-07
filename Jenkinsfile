@@ -34,6 +34,8 @@ pipeline {
     }
     post {
         always('Important stuff') {
+            sh 'pwd'
+            sh 'mv -R $HOME/voigtmycroft/allure-result allure-result'
             script {
                 allure([
                     includeProperties: false,
