@@ -44,7 +44,7 @@ pipeline {
                     results: [[path: 'allure-result']]
                 ])
             }
-            this_branch = sh 'echo $BRANCH_NAME | sed -e "s#/#_#g"'
+            def this_branch = sh 'echo $BRANCH_NAME | sed -e "s#/#_#g"'
             sh 'tar -czf ${this_branch}.tar.gz allure-report'
             sh 'scp $BRANCH_NAME.tar.gz root@157.245.127.234:~'
             sh(
