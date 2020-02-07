@@ -34,7 +34,6 @@ pipeline {
     }
     post {
         always('Important stuff') {
-            sh 'pwd'
             sh 'mv $HOME/voigtmycroft/allure-result allure-result'
             script {
                 allure([
@@ -45,15 +44,7 @@ pipeline {
                     results: [[path: 'allure-result']]
                 ])
             }
-//             sh 'allure generate --output allure-report --clean $HOME/voigtmycroft/allure-result'
-//             publishHTML (target: [
-//               allowMissing: false,
-//               alwaysLinkToLastBuild: false,
-//               keepAll: true,
-//               reportDir: 'allure-report',
-//               reportFiles: 'index.html',
-//               reportName: "Behave Report"
-//             ])
+            sh 'scp allure-port.zip root@157.245.127.234:~' + BRANCH_NAME
             sh(
                 label: 'Docker container and image cleanup',
                 script: '''
