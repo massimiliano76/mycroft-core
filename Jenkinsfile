@@ -48,7 +48,7 @@ pipeline {
                         ])
                     }
                     sh 'tar -czf ${BRANCH_NO_SLASH}.tar.gz allure-report'
-                    sh 'scp ${BRANCH_NO_SLASH}.tar.gz root@157.245.127.234:~'
+                    sh 'scp -v ${BRANCH_NO_SLASH}.tar.gz root@157.245.127.234:~'
                 }
             }
         }
