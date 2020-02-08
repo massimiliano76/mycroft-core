@@ -8,6 +8,12 @@ pipeline {
     stages {
         // Run the build in the against the dev branch to check for compile errors
         stage('Run Integration Tests') {
+            environment {
+                BRANCH_NO_SLASH = sh(
+                    script: 'echo $BRANCH_NAME | sed -e "s#/#_#g"',
+                    returnStdout: true
+                ).trim()
+            }
             when {
                 anyOf {
                     branch 'testing/behave'
@@ -29,40 +35,26 @@ pipeline {
                         mycroft-core:latest'
                 }
             }
-        }
-        stage('Report Integration Test Results') {
-            environment {
-                BRANCH_NO_SLASH = sh(
-                    script: 'echo $BRANCH_NAME | sed -e "s#/#_#g"',
-                    returnStdout: true
-                ).trim()
-            }
-            when {
-                anyOf {
-                    branch 'testing/behave'
-                    branch 'dev'
-                    branch 'master'
-                    changeRequest target: 'dev'
+            post('Report Test Results') {
+                always {
+                    sh 'mv $HOME/voigtmycroft/allure-result allure-result'
+                    script {
+                        allure([
+                            includeProperties: false,
+                            jdk: '',
+                            properties: [],
+                            reportBuildPolicy: 'ALWAYS',
+                            results: [[path: 'allure-result']]
+                        ])
+                    }
+                    sh 'tar -czf ${BRANCH_NO_SLASH}.tar.gz allure-report'
+                    sh 'scp ${BRANCH_NO_SLASH}.tar.gz root@157.245.127.234:~'
                 }
-            }
-            steps {
-                sh 'mv $HOME/voigtmycroft/allure-result allure-result'
-                script {
-                    allure([
-                        includeProperties: false,
-                        jdk: '',
-                        properties: [],
-                        reportBuildPolicy: 'ALWAYS',
-                        results: [[path: 'allure-result']]
-                    ])
-                }
-                sh 'tar -czf ${BRANCH_NO_SLASH}.tar.gz allure-report'
-                sh 'scp ${BRANCH_NO_SLASH}.tar.gz root@157.245.127.234:~'
             }
         }
     }
     post {
-        always('Important stuff') {
+        cleanup {
             sh(
                 label: 'Docker container and image cleanup',
                 script: '''
