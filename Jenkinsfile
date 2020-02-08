@@ -30,23 +30,39 @@ pipeline {
                 }
             }
         }
-        
+        stage('Report Integration Test Results') {
+            environment {
+                BRANCH_NO_SLASH = sh(
+                    script: 'echo $BRANCH_NAME | sed -e "s#/#_#g"',
+                    returnStdout: true
+                ).trim()
+            }
+            when {
+                anyOf {
+                    branch 'testing/behave'
+                    branch 'dev'
+                    branch 'master'
+                    changeRequest target: 'dev'
+                }
+            }
+            steps {
+                sh 'mv $HOME/voigtmycroft/allure-result allure-result'
+                script {
+                    allure([
+                        includeProperties: false,
+                        jdk: '',
+                        properties: [],
+                        reportBuildPolicy: 'ALWAYS',
+                        results: [[path: 'allure-result']]
+                    ])
+                }
+                sh 'tar -czf ${BRANCH_NO_SLASH}.tar.gz allure-report'
+                sh 'scp ${BRANCH_NO_SLASH}.tar.gz root@157.245.127.234:~'
+            }
+        }
     }
     post {
         always('Important stuff') {
-            sh 'mv $HOME/voigtmycroft/allure-result allure-result'
-            script {
-                allure([
-                    includeProperties: false,
-                    jdk: '',
-                    properties: [],
-                    reportBuildPolicy: 'ALWAYS',
-                    results: [[path: 'allure-result']]
-                ])
-            }
-            def this_branch = sh 'echo $BRANCH_NAME | sed -e "s#/#_#g"'
-            sh 'tar -czf ${this_branch}.tar.gz allure-report'
-            sh 'scp $BRANCH_NAME.tar.gz root@157.245.127.234:~'
             sh(
                 label: 'Docker container and image cleanup',
                 script: '''
