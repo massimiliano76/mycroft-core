@@ -10,7 +10,10 @@ pipeline {
         stage('Run Integration Tests') {
             environment {
                 BRANCH_NO_SLASH = sh(
-                    script: 'echo $BRANCH_NAME | sed -e "s#/#_#g"',
+                    script: '''
+                        echo This is a test
+                        echo $BRANCH_NAME | sed -e "s#/#_#g"
+                    ''',
                     returnStdout: true
                 ).trim()
             }
