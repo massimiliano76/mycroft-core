@@ -26,6 +26,7 @@ pipeline {
 //                 sh 'docker build --no-cache --target voigt_kampff -t mycroft-core:latest .'
                 timeout(time: 60, unit: 'MINUTES')
                 {
+                    echo 'Running Tests'
                     sh 'docker run \
                         -v "$HOME/voigtmycroft:/root/.mycroft" \
                         --device /dev/snd \
@@ -48,7 +49,8 @@ pipeline {
                         ])
                     }
                     sh 'tar -czf ${BRANCH_NO_SLASH}.tar.gz allure-report'
-                    sh 'scp -v ${BRANCH_NO_SLASH}.tar.gz root@157.245.127.234:~'
+                    sh 'scp ${BRANCH_NO_SLASH}.tar.gz root@157.245.127.234:~'
+                    echo 'Report Published'
                 }
             }
         }
