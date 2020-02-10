@@ -61,7 +61,7 @@ pipeline {
 //                     )
                     sh (
                         label: 'Copy Report to Web Server',
-                        script: 'scp allure-report.zip root@157.245.127.234:~/${BRANCH_ALIAS}'
+                        script: 'scp allure-report.zip root@157.245.127.234:~/${BRANCH_ALIAS}.zip'
                     )
                     echo 'Report Published'
                 }
