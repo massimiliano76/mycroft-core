@@ -33,7 +33,7 @@ pipeline {
                 timeout(time: 60, unit: 'MINUTES')
                 {
                     sh 'docker run \
-                        -v "$HOME/voigtmycroft:/root/.mycroft"
+                        -v "$HOME/voigtmycroft:/root/.mycroft" \
                         --device /dev/snd \
                         -e PULSE_SERVER=unix:${XDG_RUNTIME_DIR}/pulse/native \
                         -v ${XDG_RUNTIME_DIR}/pulse/native:${XDG_RUNTIME_DIR}/pulse/native \
