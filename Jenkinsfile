@@ -63,7 +63,7 @@ pipeline {
                         label: 'Copy Report to Web Server',
                         script: 'scp allure-report.zip root@157.245.127.234:~/${BRANCH_ALIAS}.zip'
                     )
-                    sh 'ssh root@157.245.127.234 "mkdir -p /var/www/voigt-kampff/${BRANCH_ALIAS}""'
+                    sh 'ssh root@157.245.127.234 "mkdir -p /var/www/voigt-kampff/${BRANCH_ALIAS}"'
                     sh (
                         label: 'Copy Report to Web Server',
                         script: 'ssh root@157.245.127.234 "unzip ~/${BRANCH_ALIAS}.zip /var/www/voigt-kampff/${BRANCH_ALIAS}"'
