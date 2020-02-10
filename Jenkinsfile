@@ -61,7 +61,7 @@ pipeline {
                     )
                     sh (
                         label: 'Copy Report to Web Server',
-                        script 'scp ${BRANCH_NO_SLASH}.tar.gz root@157.245.127.234:~'
+                        script: 'scp ${BRANCH_NO_SLASH}.tar.gz root@157.245.127.234:~'
                     )
                     echo 'Report Published'
                 }
