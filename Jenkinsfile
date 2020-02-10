@@ -54,7 +54,7 @@ pipeline {
                             results: [[path: 'allure-result']]
                         ])
                     }
-                    unarchive
+                    unarchive mapping:['allure-report.zip': 'allure-report.zip']
                     sh(
                         label: 'Package Report',
                         script: 'tar -czf ${BRANCH_NO_SLASH}.tar.gz allure-report'
