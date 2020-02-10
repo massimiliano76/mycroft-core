@@ -5,18 +5,19 @@ pipeline {
         // building the Docker image.
         disableConcurrentBuilds()
     }
+    environment {
+        // Some branches have a "/" in their name (e.g. feature/new-and-cool)
+        // Some commands, such as those tha deal with directories, don't
+        // play nice with this naming convention.  Define an alias for the
+        // branch name that can be used in these scenarios.
+        BRANCH_ALIAS = sh(
+            script: 'echo $BRANCH_NAME | sed -e "s#/#_#g"',
+            returnStdout: true
+        ).trim()
+    }
     stages {
         // Run the build in the against the dev branch to check for compile errors
         stage('Run Integration Tests') {
-            environment {
-                BRANCH_NO_SLASH = sh(
-                    script: '''
-                        echo This is a test
-                        echo $BRANCH_NAME | sed -e "s#/#_#g"
-                    ''',
-                    returnStdout: true
-                ).trim()
-            }
             when {
                 anyOf {
                     branch 'testing/behave'
@@ -26,21 +27,23 @@ pipeline {
                 }
             }
             steps {
-//                 sh 'docker build --no-cache --target voigt_kampff -t mycroft-core:latest .'
+                echo 'Building Test Docker Image'
+                sh 'docker build --no-cache --target voigt_kampff -t mycroft-core:${BRANCH_ALIAS} .'
+                echo 'Running Tests'
                 timeout(time: 60, unit: 'MINUTES')
                 {
-                    echo 'Running Tests'
                     sh 'docker run \
-                        -v "$HOME/voigtmycroft:/root/.mycroft" \
+                        -v "$HOME/voigtmycroft:/root/.mycroft"
                         --device /dev/snd \
                         -e PULSE_SERVER=unix:${XDG_RUNTIME_DIR}/pulse/native \
                         -v ${XDG_RUNTIME_DIR}/pulse/native:${XDG_RUNTIME_DIR}/pulse/native \
                         -v ~/.config/pulse/cookie:/root/.config/pulse/cookie \
-                        mycroft-core:latest'
+                        mycroft-core:${BRANCH_ALIAS}'
                 }
             }
-            post('Report Test Results') {
+            post {
                 always {
+                    echo 'Report Test Results'
                     sh 'mv $HOME/voigtmycroft/allure-result allure-result'
                     script {
                         allure([
@@ -51,8 +54,15 @@ pipeline {
                             results: [[path: 'allure-result']]
                         ])
                     }
-                    sh 'tar -czf ${BRANCH_NO_SLASH}.tar.gz allure-report'
-                    sh 'scp ${BRANCH_NO_SLASH}.tar.gz root@157.245.127.234:~'
+                    unarchive 'allure-report.zip'
+                    sh(
+                        label: 'Package Report'
+                        script: 'tar -czf ${BRANCH_NO_SLASH}.tar.gz allure-report'
+                    )
+                    sh (
+                        label: 'Copy Report to Web Server'
+                        script 'scp ${BRANCH_NO_SLASH}.tar.gz root@157.245.127.234:~'
+                    )
                     echo 'Report Published'
                 }
             }
