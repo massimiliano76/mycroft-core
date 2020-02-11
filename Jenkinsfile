@@ -58,7 +58,7 @@ pipeline {
                     sh (
                         label: 'Publish Report to Web Server',
                         script: """scp allure-report.zip root@157.245.127.234:~;
-                            ssh root@157.245.127.234 <<EOF
+                            ssh -t root@157.245.127.234 <<EOF
                                 unzip ~/allure-report.zip
                                 rm -rf /var/www/voigt-kampff/${BRANCH_ALIAS}
                             EOF;
