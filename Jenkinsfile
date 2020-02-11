@@ -28,7 +28,7 @@ pipeline {
             }
             steps {
                 echo 'Building Test Docker Image'
-//                 sh 'docker build --no-cache --target voigt_kampff -t mycroft-core:${BRANCH_ALIAS} .'
+                sh 'docker build --no-cache --target voigt_kampff -t mycroft-core:${BRANCH_ALIAS} .'
                 echo 'Running Tests'
                 timeout(time: 60, unit: 'MINUTES')
                 {
@@ -58,20 +58,19 @@ pipeline {
                     sh (
                         label: 'Publish Report to Web Server',
                         script: """scp allure-report.zip root@157.245.127.234:~;
-                            ssh -t root@157.245.127.234 <<EOF
-                                unzip ~/allure-report.zip;
-                                rm -rf /var/www/voigt-kampff/${BRANCH_ALIAS}
-                            EOF;
-                        """.stripIndent()
+                            ssh root@157.245.127.234 "unzip ~/allure-report.zip";
+                            ssh root@157.245.127.234 "rm -rf /var/www/voigt-kampff/${BRANCH_ALIAS}";
+                            ssh root@157.245.127.234 "mv allure-report /var/www/voigt-kampff/${BRANCH_ALIAS}"
+                        """
                     )
 //                     sh (
 //                         label: 'Remove Previous Version of Report',
 //                         script: 'ssh root@157.245.127.234 "rm -rf /var/www/voigt-kampff/${BRANCH_ALIAS}"'
 //                     )
-                    sh (
-                        label: 'Add New Version of Report',
-                        script: 'ssh root@157.245.127.234 "mv allure-report /var/www/voigt-kampff/${BRANCH_ALIAS}"'
-                    )
+//                     sh (
+//                         label: 'Add New Version of Report',
+//                         script: 'ssh root@157.245.127.234 "mv allure-report /var/www/voigt-kampff/${BRANCH_ALIAS}"'
+//                     )
                     echo 'Report Published'
                 }
             }
