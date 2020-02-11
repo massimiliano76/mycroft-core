@@ -68,7 +68,11 @@ pipeline {
                         script: 'ssh root@157.245.127.234 "unzip ~/allure-report.zip"'
                     )
                     sh (
-                        label: 'Copy Report to Web Server',
+                        label: 'Remove Previous Version of Report',
+                        script: 'ssh root@157.245.127.234 "rm -rf /var/www/voigt-kampff/${BRANCH_ALIAS}"'
+                    )
+                    sh (
+                        label: 'Add New Version of Report',
                         script: 'ssh root@157.245.127.234 "mv allure-report /var/www/voigt-kampff/${BRANCH_ALIAS}"'
                     )
                     echo 'Report Published'
