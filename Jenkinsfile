@@ -30,7 +30,7 @@ pipeline {
                 echo 'Building Test Docker Image'
                 sh 'docker build --no-cache --target voigt_kampff -t mycroft-core:${BRANCH_ALIAS} .'
                 echo 'Running Tests'
-                timeout(time: 60, unit: 'MINUTES')
+                timeout(time: 10, unit: 'MINUTES')
                 {
                     sh 'docker run \
                         -v "$HOME/voigtmycroft:/root/.mycroft" \
@@ -57,20 +57,12 @@ pipeline {
                     unarchive mapping:['allure-report.zip': 'allure-report.zip']
                     sh (
                         label: 'Publish Report to Web Server',
-                        script: """scp allure-report.zip root@157.245.127.234:~;
+                        script: '''scp allure-report.zip root@157.245.127.234:~;
                             ssh root@157.245.127.234 "unzip -o ~/allure-report.zip";
                             ssh root@157.245.127.234 "rm -rf /var/www/voigt-kampff/${BRANCH_ALIAS}";
                             ssh root@157.245.127.234 "mv allure-report /var/www/voigt-kampff/${BRANCH_ALIAS}"
-                        """
+                        '''
                     )
-//                     sh (
-//                         label: 'Remove Previous Version of Report',
-//                         script: 'ssh root@157.245.127.234 "rm -rf /var/www/voigt-kampff/${BRANCH_ALIAS}"'
-//                     )
-//                     sh (
-//                         label: 'Add New Version of Report',
-//                         script: 'ssh root@157.245.127.234 "mv allure-report /var/www/voigt-kampff/${BRANCH_ALIAS}"'
-//                     )
                     echo 'Report Published'
                 }
             }
@@ -79,11 +71,11 @@ pipeline {
     post {
         cleanup {
             sh(
-                label: 'Docker container and image cleanup',
+                label: 'Docker Container and Image Cleanup',
                 script: '''
-                    docker container prune --force
-                    docker image prune --force
-                '''.stripIndent()
+                    docker container prune --force;
+                    docker image prune --force;
+                '''
             )
         }
     }
