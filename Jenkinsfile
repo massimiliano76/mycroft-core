@@ -28,7 +28,7 @@ pipeline {
             }
             steps {
                 echo 'Building Test Docker Image'
-//                 sh 'docker build --no-cache --target voigt_kampff -t mycroft-core:${BRANCH_ALIAS} .'
+                sh 'docker build --no-cache --target voigt_kampff -t mycroft-core:${BRANCH_ALIAS} .'
                 echo 'Running Tests'
                 timeout(time: 60, unit: 'MINUTES')
                 {
@@ -55,18 +55,16 @@ pipeline {
                         ])
                     }
                     unarchive mapping:['allure-report.zip': 'allure-report.zip']
-//                     sh(
-//                         label: 'Package Report',
-//                         script: 'tar -czf ${BRANCH_NO_SLASH}.tar.gz allure-report'
+                    sh (
+                        label: 'Publish Report to Web Server',
+                        script: """scp allure-report.zip root@157.245.127.234:~;
+                            ssh root@157.245.127.234 "unzip ~/allure-report.zip";
+                        """
+                    )
+//                     sh (
+//                         label: 'Unzip Report',
+//                         script: 'ssh root@157.245.127.234 "unzip ~/allure-report.zip"'
 //                     )
-                    sh (
-                        label: 'Copy Report to Web Server',
-                        script: 'scp allure-report.zip root@157.245.127.234:~'
-                    )
-                    sh (
-                        label: 'Unzip Report',
-                        script: 'ssh root@157.245.127.234 "unzip ~/allure-report.zip"'
-                    )
                     sh (
                         label: 'Remove Previous Version of Report',
                         script: 'ssh root@157.245.127.234 "rm -rf /var/www/voigt-kampff/${BRANCH_ALIAS}"'
