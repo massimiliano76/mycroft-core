@@ -28,7 +28,7 @@ pipeline {
             }
             steps {
                 echo 'Building Test Docker Image'
-                sh 'docker build --no-cache --target voigt_kampff -t mycroft-core:${BRANCH_ALIAS} .'
+                sh 'docker build --target voigt_kampff -t mycroft-core:${BRANCH_ALIAS} .'
                 echo 'Running Tests'
                 timeout(time: 10, unit: 'MINUTES')
                 {
