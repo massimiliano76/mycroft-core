@@ -73,7 +73,10 @@ EXPOSE 8181
 FROM builder as voigt_kampff
 # Add the mycroft core virtual environment to the system path.
 ENV PATH /opt/mycroft/mycroft-core/.venv/bin:$PATH
+# Install required packages for test environments
 RUN mycroft-core/.venv/bin/python -m pip install -r mycroft-core/test-requirements.txt
+# Generate hash of required packages
+RUN md5sum requirements.txt test-requirements.txt dev_setup.sh > .installed
 RUN mkdir ~/.mycroft/allure-result
 
 # Install Mark I default skills
