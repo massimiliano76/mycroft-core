@@ -75,8 +75,6 @@ FROM builder as voigt_kampff
 ENV PATH /opt/mycroft/mycroft-core/.venv/bin:$PATH
 # Install required packages for test environments
 RUN mycroft-core/.venv/bin/python -m pip install -r mycroft-core/test-requirements.txt
-# Generate hash of required packages
-RUN md5sum requirements.txt test-requirements.txt dev_setup.sh > .installed
 RUN mkdir ~/.mycroft/allure-result
 
 # Install Mark I default skills
@@ -86,6 +84,8 @@ RUN msm -p mycroft_mark_1 default
 # repository.  Copy those files into the local feature file directory
 # for test discovery.
 WORKDIR /opt/mycroft/mycroft-core
+# Generate hash of required packages
+RUN md5sum requirements.txt test-requirements.txt dev_setup.sh > .installed
 RUN python -m test.integrationtests.voigt_kampff.skill_setup -c test/integrationtests/voigt_kampff/default.yml
 
 # Setup and run the integration tests
